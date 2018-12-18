@@ -52,9 +52,9 @@ func ParseBytes(f io.Reader) (*File, error) {
 	return res, nil
 }
 
-// ReadMetadata reads in only the meta-data from the file, which should be open for reading.
+// ParseMetadata fills the metadata and file information without reading in audio blocks.
 // Note: this method intentionally doesn't read in audio-data frames.
-func ReadMetadata(f *os.File) (*File, error) {
+func ParseMetadata(f io.Reader) (*File, error) {
 
 	// Make sure it's an actual FLAC file.
 	if err := readFLACHead(f); err != nil {
