@@ -52,6 +52,27 @@ func ParseBytes(f io.Reader) (*File, error) {
 	return res, nil
 }
 
+// Open gets the file and reads in the meta-data.
+// Note: specifically doesn't read in audio-data frames.
+func Open(filename string) (*File, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	// Make sure it's an actual FLAC file.
+	if err := readFLACHead(f); err != nil {
+		return nil, err
+	}
+
+	meta, err := readMetadataBlocks(f)
+	newFile := &File{
+		Meta: meta,
+	}
+
+	return newFile, err
+}
+
 // ParseFile parses a FLAC file
 func ParseFile(filename string) (*File, error) {
 	f, err := os.Open(filename)
